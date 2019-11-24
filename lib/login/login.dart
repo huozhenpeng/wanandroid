@@ -209,7 +209,16 @@ class CustomEditWidgetState extends State<CustomEditWidget>
 
 }
 
-class LoginBoxWidget extends StatelessWidget
+class LoginBoxWidget extends StatefulWidget
+{
+  @override
+  State<StatefulWidget> createState() {
+    return LoginBoxWidgetState();
+  }
+
+}
+///在from表单中使用key，必须是在有状态的控件中才行，要不然键盘不停的弹出消失
+class LoginBoxWidgetState extends State<LoginBoxWidget>
 {
   GlobalKey _formKey= new GlobalKey<FormState>();
   @override
@@ -241,12 +250,12 @@ class LoginBoxWidget extends StatelessWidget
                   child: Column(
                     children: <Widget>[
                       CustomEditWidget(
-                          (v){
+                              (v){
                             return v
                                 .trim()
                                 .length > 0 ? null : "用户名不能为空";
                           },
-                          (v){
+                              (v){
 
                           },
                           Icon(Icons.person),
@@ -264,52 +273,52 @@ class LoginBoxWidget extends StatelessWidget
                   ),
                 ),
                 Container(
-                  margin: EdgeInsets.fromLTRB(10,45,10,0),
-                  width: double.infinity,
-                  height: 35,
-                  child: DecoratedBox(
-                    decoration: BoxDecoration(
-                      color: colorProvider.theme,
-                      borderRadius:BorderRadius.all(Radius.circular(17)),
-                    ),
-                    child: Container(
-                      alignment: Alignment.center,
-                      padding: EdgeInsets.fromLTRB(14, 3, 14, 3),
-                      child: InkWell(
-                        child: Text("登陆",style: TextStyle(color: modeProvider.themeMode== Brightness.dark
-                            ? modeProvider.color
-                            : Colors.white,),),
-                        onTap: (){
+                    margin: EdgeInsets.fromLTRB(10,45,10,0),
+                    width: double.infinity,
+                    height: 35,
+                    child: DecoratedBox(
+                      decoration: BoxDecoration(
+                        color: colorProvider.theme,
+                        borderRadius:BorderRadius.all(Radius.circular(17)),
+                      ),
+                      child: Container(
+                        alignment: Alignment.center,
+                        padding: EdgeInsets.fromLTRB(14, 3, 14, 3),
+                        child: InkWell(
+                          child: Text("登陆",style: TextStyle(color: modeProvider.themeMode== Brightness.dark
+                              ? modeProvider.color
+                              : Colors.white,),),
+                          onTap: (){
                           if((_formKey.currentState as FormState).validate()){
                             //验证通过提交数据
                           }
-                        },
+                          },
+                        ),
                       ),
-                    ),
-                )
+                    )
                 ),
 
                 Container(
                   margin: EdgeInsets.only(top: 20),
                   alignment: Alignment.center,
                   child: Text.rich(
-                    TextSpan(
-                      children: [
-                        TextSpan(
-                          text: "还没账号？"
-                        ),
-                        TextSpan(
-                            text: "去注册",
-                          style: TextStyle(
-                            color: colorProvider.theme
-                          ),
-                          recognizer: TapGestureRecognizer()..onTap = (){
-                              print("去注册");
-                          },
-                        )
+                      TextSpan(
+                          children: [
+                            TextSpan(
+                                text: "还没账号？"
+                            ),
+                            TextSpan(
+                              text: "去注册",
+                              style: TextStyle(
+                                  color: colorProvider.theme
+                              ),
+                              recognizer: TapGestureRecognizer()..onTap = (){
+                                print("去注册");
+                              },
+                            )
 
-                      ]
-                    )
+                          ]
+                      )
                   ),
                 )
 
@@ -323,7 +332,6 @@ class LoginBoxWidget extends StatelessWidget
   }
 
 }
-
 
 //这儿如果没有加这个Path泛型，赋值会报错
 class MyCustomerClip extends CustomClipper<Path>

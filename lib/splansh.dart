@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
+import 'config/route_name.dart';
+
 class SplanshWidget extends StatefulWidget
 {
   @override
@@ -155,7 +157,7 @@ class CountDownWidgetState extends State<CountDownWidget>
         child: InkWell(
            child: Text("$_time | 跳过",style: TextStyle(color: Colors.white),),
           onTap: (){
-
+             Navigator.of(context).pushNamed(RouteName.main_page);
           },
         ),
       ),
@@ -173,6 +175,7 @@ class CountDownWidgetState extends State<CountDownWidget>
     _timer=Timer.periodic(Duration(seconds: 1), (timer){
       if(_time<1)
         {
+          Navigator.of(context).pushNamed(RouteName.main_page);
           timer.cancel();
         }
       else

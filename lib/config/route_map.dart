@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:wanandroid/config/route_name.dart';
+import 'package:wanandroid/login/login.dart';
+import 'package:wanandroid/main_pages/mainpage.dart';
 
 import '../splansh.dart';
 
@@ -26,6 +28,8 @@ class RouteMap
   {
     return {
       RouteName.splansh:(context)=>SplanshWidget(),//spansh页面
+      RouteName.main_page:(context)=>MainPage(),//主页面
+      RouteName.login:(context)=>LoginWidget(),//主页面
     };
   }
 
