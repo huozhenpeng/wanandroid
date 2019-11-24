@@ -30,17 +30,20 @@ void main() {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'wanandroid',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        brightness: Brightness.light,
-      ),
-      home: MyHomePage(title: 'wanandroid'),
-      routes: RouteMap.instance.getRouteMap(),
-      //initialRoute:RouteName.splansh ,
-    );
+    return Consumer<ThemeColorProvider>(builder: (context,themeColorProvider,child){
+      return MaterialApp(
+        debugShowCheckedModeBanner: false,
+        title: 'wanandroid',
+        theme: ThemeData(
+          primarySwatch: themeColorProvider.theme,
+          primaryColor: themeColorProvider.theme,
+          brightness: Brightness.light,
+        ),
+        home: MyHomePage(title: 'wanandroid'),
+        routes: RouteMap.instance.getRouteMap(),
+        //initialRoute:RouteName.splansh ,
+      );
+    });
   }
 }
 

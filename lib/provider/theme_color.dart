@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class ThemeColorProvider with ChangeNotifier
 {
-  Color _theme=Colors.deepPurpleAccent;
+  Color _theme=Colors.deepPurple;
 
   Color get theme=>_theme;
 

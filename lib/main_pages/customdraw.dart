@@ -58,7 +58,58 @@ class CustomDrawer extends StatelessWidget
                                       }
                                   },
                                 ),
-                              )
+                              ),
+                              ///收藏
+                              ListTile(
+                                leading: Icon(Icons.favorite_border,color: colorProvider.theme,),
+                                trailing: Icon(Icons.keyboard_arrow_right),
+                                title: Text("收藏"),
+                                contentPadding: EdgeInsets.fromLTRB(15, 50, 10, 0),
+                              ),
+                              ExpansionTile(
+                                leading: Icon(Icons.color_lens,color: colorProvider.theme,),
+                                trailing: Icon(Icons.keyboard_arrow_down),
+                                title: Text("色彩"),
+                                children: [
+                                  Padding(
+                                    padding: EdgeInsets.only(bottom: 10),
+                                    child: Wrap(
+                                      children: Colors.primaries.map((color){
+                                        return InkWell(
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                                color: color,
+                                                borderRadius: BorderRadius.all(Radius.circular(15))
+                                            ),
+                                            margin: EdgeInsets.all(5),
+                                            width: 30,
+                                            height: 30,
+
+                                          ),
+                                          onTap: (){
+                                            colorProvider.setTheme(color);
+                                          },
+                                        );
+                                      }
+                                      ).toList(),
+                                    ),
+                                  )
+                                ],
+                              ),
+                              ListTile(
+                                leading: Icon(Icons.brightness_5,color: colorProvider.theme,),
+                                trailing: Icon(Icons.keyboard_arrow_right),
+                                title: Text("设置"),
+                                contentPadding: EdgeInsets.fromLTRB(15, 0, 10, 0),
+                              ),
+                              ListTile(
+                                leading: Icon(Icons.info_outline,color: colorProvider.theme,),
+                                trailing: Icon(Icons.keyboard_arrow_right),
+                                title: Text("关于"),
+                                contentPadding: EdgeInsets.fromLTRB(15, 0, 10, 0),
+                              ),
+                              
+                              
                             ],
                           ) ,
                         )
@@ -68,6 +119,16 @@ class CustomDrawer extends StatelessWidget
               );
             }
     );
+  }
+
+}
+
+class ColorSelectWidget extends StatelessWidget
+{
+  @override
+  Widget build(BuildContext context) {
+    // TODO: implement build
+    return null;
   }
 
 }
