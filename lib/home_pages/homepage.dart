@@ -4,7 +4,9 @@ import 'package:provider/provider.dart';
 import 'package:wanandroid/entitys/home_articles.dart';
 import 'package:wanandroid/entitys/top_articles.dart';
 import 'package:wanandroid/login/loading_utils.dart';
+import 'package:wanandroid/main_pages/switch_visiable.dart';
 import 'package:wanandroid/provider/home_provider.dart';
+import 'package:wanandroid/provider/homescrollcontroler_provider.dart';
 import 'package:wanandroid/provider/theme_color.dart';
 import 'package:wanandroid/utils/toast_utils.dart';
 
@@ -38,19 +40,53 @@ class HomePageState extends State<HomePage>
 
     Provider.of<HomeProvider>(context,listen: false).getHomeArticles(page);
 
+    Provider.of<HomeScrollerProvider>(context,listen: false).init();
+
   }
   @override
   Widget build(BuildContext context) {
 
-    return Consumer<ThemeColorProvider>(builder: (context,colorProvider,child){
+    return Consumer2<ThemeColorProvider,HomeScrollerProvider>(builder: (context,colorProvider,scrollProvider,child){
 
       return Scaffold(
+        floatingActionButton: FloatingActionButton(
+          child: scrollProvider.showTitle?Icon(Icons.vertical_align_top,color: colorProvider.theme.computeLuminance()<0.5?Colors.white:Colors.black,):Icon(Icons.search,color: colorProvider.theme.computeLuminance()<0.5?Colors.white:Colors.black,),
+          onPressed: (){
+            if(scrollProvider.showTitle)
+              {
+                scrollProvider.scrollToTop();
+              }
+            else
+              {
+
+              }
+          },
+        ),
 
         body: CustomScrollView(
+          controller: scrollProvider.scrollController,
           slivers: <Widget>[
-            SliverToBoxAdapter(
-              child: _getBanner(),
+            SliverAppBar(
+              //这两个属性配合，可以隐藏左侧返回按钮
+             automaticallyImplyLeading:false,
+              leading: null,
+              actions: <Widget>[
+                SwitchVisible(IconButton(
+                  icon: Icon(Icons.search,color: colorProvider.theme.computeLuminance()<0.5?Colors.white:Colors.black,),
+                  onPressed: () {},
+                ),scrollProvider.showTitle)
+              ],
+              flexibleSpace: FlexibleSpaceBar(
+                background: _getBanner(),
+                centerTitle: true,
+                title: SwitchVisible(Text("首页",style: TextStyle(color: colorProvider.theme.computeLuminance()<0.5?Colors.white:Colors.black),),scrollProvider.showTitle),
+              ),
+              expandedHeight: 220,
+              pinned: true,
             ),
+//            SliverToBoxAdapter(
+//              child: _getBanner(),
+//            ),
             _getTopList(),
             _getArticleList()
           ],
@@ -66,14 +102,14 @@ class HomePageState extends State<HomePage>
       if(homeProvider.homeBannerResult==null||homeProvider.homeBannerResult.data==null)
         {
           return Container(
-            height: 250,
+            height: 220,
           );
         }
       else
         {
           return Container(
             width: double.infinity,
-            height: 250,
+            height: 220,
             child: Swiper(
               itemBuilder: (BuildContext context,int index){
                 return new Image.network(homeProvider.homeBannerResult.data[index].imagePath,fit: BoxFit.fill,);

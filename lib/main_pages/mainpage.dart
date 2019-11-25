@@ -83,12 +83,7 @@ class MainPageState extends State<MainPage>
 //        index: _currentIndex,
 //      ),
     body: widgets[_currentIndex],
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.add),
-        onPressed: (){
-          Navigator.of(context).pushNamed(RouteName.login);
-        },
-      ),
+
     );
 
   }
