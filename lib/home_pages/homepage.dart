@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:provider/provider.dart';
+import 'package:wanandroid/entitys/home_articles.dart';
 import 'package:wanandroid/entitys/top_articles.dart';
 import 'package:wanandroid/login/loading_utils.dart';
 import 'package:wanandroid/provider/home_provider.dart';
@@ -18,6 +19,7 @@ class HomePage extends StatefulWidget
 
 class HomePageState extends State<HomePage>
 {
+  int page=0;
   @override
   void initState() {
     super.initState();
@@ -34,6 +36,8 @@ class HomePageState extends State<HomePage>
 
     Provider.of<HomeProvider>(context,listen: false).getTopArticles();
 
+    Provider.of<HomeProvider>(context,listen: false).getHomeArticles(page);
+
   }
   @override
   Widget build(BuildContext context) {
@@ -48,7 +52,7 @@ class HomePageState extends State<HomePage>
               child: _getBanner(),
             ),
             _getTopList(),
-
+            _getArticleList()
           ],
         ),
       );
@@ -99,6 +103,29 @@ class HomePageState extends State<HomePage>
     }
     );
   }
+
+
+  Widget _getArticleList()
+  {
+    return Consumer<HomeProvider>(builder: (context,homeProvider,child) {
+      return SliverList(delegate: SliverChildListDelegate(
+          (homeProvider.homeArticleItems.length<=0) ? [] : homeProvider
+              .homeArticleItems.map((topArticleItem) {
+                if(topArticleItem.envelopePic.isEmpty)
+                  {
+                    return ArticleItem(topArticleItem);
+                  }
+                else
+                  {
+                    return ArticleItemWithPic(topArticleItem);
+                  }
+          }).toList()
+      ),
+      );
+    }
+    );
+  }
+
 }
 
 class ArticleItem extends StatelessWidget
@@ -151,24 +178,24 @@ class ArticleItem extends StatelessWidget
     );
   }
 
-  //tag
- Widget _getTags(TopAritcleItem topAritcleItem)
- {
-   if(topAritcleItem!=null&&topAritcleItem.tags!=null&&topAritcleItem.tags.length>0)
-     {
-       return Container(margin:EdgeInsets.only(right: 10),child: Row(
-         children: topAritcleItem.tags.map((tags){
-           return Tag(tags.name);
-         }).toList(),
-       ),);
-     }
-   else
-     {
-       //这儿需要widget的时候还必须返回一个，但是这样写是不占间距的
-       return Container();
-     }
- }
+}
 
+//tag
+Widget _getTags(TopAritcleItem topAritcleItem)
+{
+  if(topAritcleItem!=null&&topAritcleItem.tags!=null&&topAritcleItem.tags.length>0)
+  {
+    return Container(margin:EdgeInsets.only(right: 10),child: Row(
+      children: topAritcleItem.tags.map((tags){
+        return Tag(tags.name);
+      }).toList(),
+    ),);
+  }
+  else
+  {
+    //这儿需要widget的时候还必须返回一个，但是这样写是不占间距的
+    return Container();
+  }
 }
 
 class Tag extends StatelessWidget
@@ -187,6 +214,75 @@ class Tag extends StatelessWidget
         child: Text(text,style: TextStyle(color: colorProvider.theme,fontSize: 12),),
       );
     });
+  }
+
+}
+
+class ArticleItemWithPic extends StatelessWidget
+{
+  final TopAritcleItem topAritcleItem;
+  ArticleItemWithPic(this.topAritcleItem);
+  @override
+  Widget build(BuildContext context) {
+
+     return Consumer<ThemeColorProvider>(builder:(context,colorProvider,child){
+
+      return Container(
+        padding: EdgeInsets.only(left: 10,top: 10,right: 10,bottom: 0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            Row(
+              children: <Widget>[
+                _getTags(topAritcleItem),
+                Container(child:Text(topAritcleItem.author.isEmpty?topAritcleItem.shareUser:topAritcleItem.author)),
+                Expanded(
+                  child: Text("${topAritcleItem.niceDate}",textAlign: TextAlign.right,),
+                )
+
+              ],
+            ),
+
+            Row(
+              children: <Widget>[
+                Container(
+                  margin: EdgeInsets.fromLTRB(0, 10, 10, 10),
+                  child: Image.network(topAritcleItem.envelopePic,width: 100,height: 70,fit: BoxFit.fill,),
+                ),
+                //Expanded   ----------------------------------------注意
+                Expanded(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Padding(
+                          padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
+                          child: Text(topAritcleItem.title, maxLines: 2, overflow: TextOverflow.ellipsis,),
+                        ),
+                       Row(
+                        children: <Widget>[
+                        Text("${topAritcleItem.superChapterName}/${topAritcleItem.chapterName}",style: TextStyle(color: Colors.black45,fontSize: 12),),
+                        Expanded(child: Container(
+                          alignment: Alignment.centerRight,
+                          child:  Icon(Icons.favorite_border,color: colorProvider.theme,),
+                        ))
+                       ,
+                      ],
+                    )
+                      ],
+                    )
+                )
+
+              ],
+            ),
+            Divider()
+          ],
+        ),
+
+      );
+    }
+    );
   }
 
 }
