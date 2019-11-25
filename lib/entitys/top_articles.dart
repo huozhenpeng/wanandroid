@@ -58,6 +58,9 @@ class TopAritcleItem {
   int visible;
   int zan;
 
+  bool isLast=false;
+  TopAritcleItem.topAritcleLastItem(this.isLast);
+
   TopAritcleItem(
       {this.apkLink,
         this.audit,

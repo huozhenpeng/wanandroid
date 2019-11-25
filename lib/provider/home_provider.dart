@@ -38,8 +38,11 @@ class HomeProvider with ChangeNotifier
 
   List<TopAritcleItem> _homeArticleItems=[];
   List<TopAritcleItem> get homeArticleItems=>_homeArticleItems;
+  TopAritcleItem topAritcleItem=TopAritcleItem.topAritcleLastItem(true);
   ///首页文章，加分页了
-  void getHomeArticles(int page) async
+  ///customerscrollview 没办法用简书上记录的那种上拉加载方案，因为它不像ListView那样可以懒加载
+  ///这里返回一个Future ,刷新和滚动加载时需要用到
+  Future<HomeArticleResult> getHomeArticles(int page) async
   {
     print("首页普通文章开始请求。。。");
     String result =await HttpUtils().get("/article/list/$page/json");
@@ -53,6 +56,7 @@ class HomeProvider with ChangeNotifier
             if(page==0)
               {
                 _homeArticleItems.clear();
+                //_homeArticleItems.add(topAritcleItem);
                 _homeArticleItems.addAll(temps);
               }
             else
@@ -61,7 +65,9 @@ class HomeProvider with ChangeNotifier
               }
             notifyListeners();
           }
+        return homeArticleResult;
       }
+    return null;
 
 
   }

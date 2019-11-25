@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:provider/provider.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:wanandroid/entitys/home_articles.dart';
 import 'package:wanandroid/entitys/top_articles.dart';
 import 'package:wanandroid/login/loading_utils.dart';
@@ -22,6 +23,8 @@ class HomePage extends StatefulWidget
 class HomePageState extends State<HomePage>
 {
   int page=0;
+  RefreshController _refreshController =
+  RefreshController(initialRefresh: false);
   @override
   void initState() {
     super.initState();
@@ -63,37 +66,81 @@ class HomePageState extends State<HomePage>
           },
         ),
 
-        body: CustomScrollView(
-          controller: scrollProvider.scrollController,
-          slivers: <Widget>[
-            SliverAppBar(
-              //这两个属性配合，可以隐藏左侧返回按钮
-             automaticallyImplyLeading:false,
-              leading: null,
-              actions: <Widget>[
-                SwitchVisible(IconButton(
-                  icon: Icon(Icons.search,color: colorProvider.theme.computeLuminance()<0.5?Colors.white:Colors.black,),
-                  onPressed: () {},
-                ),scrollProvider.showTitle)
-              ],
-              flexibleSpace: FlexibleSpaceBar(
-                background: _getBanner(),
-                centerTitle: true,
-                title: SwitchVisible(Text("首页",style: TextStyle(color: colorProvider.theme.computeLuminance()<0.5?Colors.white:Colors.black),),scrollProvider.showTitle),
-              ),
-              expandedHeight: 220,
-              pinned: true,
-            ),
+        body: SmartRefresher(
+            controller: _refreshController,
+            onRefresh: _onRefresh,
+            onLoading: _onLoading,
+            enablePullDown: true,
+            enablePullUp: true,
+            header: MaterialClassicHeader(),
+            child:CustomScrollView(
+              controller: scrollProvider.scrollController,
+              slivers: <Widget>[
+                SliverAppBar(
+                  //这两个属性配合，可以隐藏左侧返回按钮
+                  automaticallyImplyLeading:false,
+                  leading: null,
+                  actions: <Widget>[
+                    SwitchVisible(IconButton(
+                      icon: Icon(Icons.search,color: colorProvider.theme.computeLuminance()<0.5?Colors.white:Colors.black,),
+                      onPressed: () {},
+                    ),scrollProvider.showTitle)
+                  ],
+                  flexibleSpace: FlexibleSpaceBar(
+                    background: _getBanner(),
+                    centerTitle: true,
+                    title: SwitchVisible(Text("首页",style: TextStyle(color: colorProvider.theme.computeLuminance()<0.5?Colors.white:Colors.black),),scrollProvider.showTitle),
+                  ),
+                  expandedHeight: 220,
+                  pinned: true,
+                ),
 //            SliverToBoxAdapter(
 //              child: _getBanner(),
 //            ),
-            _getTopList(),
-            _getArticleList()
-          ],
+                _getTopList(),
+                _getArticleList()
+              ],
+            )
         ),
       );
     });
   }
+
+  void _onRefresh() async{
+    // monitor network fetch
+    page=0;
+    HomeArticleResult result=await Provider.of<HomeProvider>(context,listen: false).getHomeArticles(page);
+    // if failed,use refreshFailed()
+    if(result==null)
+      {
+        _refreshController.refreshFailed();
+      }
+    else
+      {
+        _refreshController.refreshCompleted();
+      }
+  }
+
+  void _onLoading() async{
+    page++;
+    // monitor network fetch
+    HomeArticleResult result=await Provider.of<HomeProvider>(context,listen: false).getHomeArticles(page);
+    // if failed,use loadFailed(),if no data return,use LoadNodata()
+    if(result==null)
+      {
+        _refreshController.loadFailed();
+      }
+    else if(page>=result.data.pageCount)
+      {
+        _refreshController.loadNoData();
+      }
+    else
+      {
+        _refreshController.loadComplete();
+      }
+
+  }
+
 
   Widget _getBanner()
   {
@@ -147,14 +194,17 @@ class HomePageState extends State<HomePage>
       return SliverList(delegate: SliverChildListDelegate(
           (homeProvider.homeArticleItems.length<=0) ? [] : homeProvider
               .homeArticleItems.map((topArticleItem) {
-                if(topArticleItem.envelopePic.isEmpty)
-                  {
-                    return ArticleItem(topArticleItem);
-                  }
-                else
-                  {
-                    return ArticleItemWithPic(topArticleItem);
-                  }
+
+                    if(topArticleItem.envelopePic.isEmpty)
+                    {
+                      return ArticleItem(topArticleItem);
+                    }
+                    else
+                    {
+                      return ArticleItemWithPic(topArticleItem);
+                    }
+
+
           }).toList()
       ),
       );
