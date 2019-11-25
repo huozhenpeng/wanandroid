@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:wanandroid/config/route_map.dart';
+import 'package:wanandroid/http/http_utils.dart';
+import 'package:wanandroid/login/loading_utils.dart';
 import 'package:wanandroid/provider/globle_provider.dart';
+import 'package:wanandroid/provider/home_provider.dart';
 import 'package:wanandroid/provider/theme_color.dart';
 import 'package:wanandroid/provider/theme_mode.dart';
 import 'package:wanandroid/splansh.dart';
@@ -13,6 +16,7 @@ void main() {
   final ThemeColorProvider themeProvider=ThemeColorProvider();
   final ThemeModeProvider themeModeProvider=ThemeModeProvider();
   final GlobalProvider globalProvider=GlobalProvider();
+  final HomeProvider homeProvider=HomeProvider();
 
   runApp(
       MultiProvider(
@@ -20,6 +24,7 @@ void main() {
           ChangeNotifierProvider.value(value: themeProvider),
           ChangeNotifierProvider.value(value: themeModeProvider),
           ChangeNotifierProvider.value(value: globalProvider),
+          ChangeNotifierProvider.value(value: homeProvider),
         ],
         child: MyApp(),
       ),
@@ -58,6 +63,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
+    LoadingUtils.context=context;
     return Scaffold(
       body: SplanshWidget(),
     );

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:wanandroid/config/route_name.dart';
+import 'package:wanandroid/home_pages/homepage.dart';
 import 'package:wanandroid/login/login.dart';
 import 'package:wanandroid/main_pages/customdraw.dart';
 import 'package:wanandroid/provider/theme_color.dart';
@@ -21,9 +22,7 @@ class MainPageState extends State<MainPage>
   int _currentIndex=0;
   List<Widget> widgets =[
     Center(
-      child: InkWell(
-        child: Text("点击登录"),
-      ),
+      child: HomePage(),
     ),
     Center(
       child: Text("2"),
