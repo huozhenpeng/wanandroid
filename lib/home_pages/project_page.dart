@@ -80,10 +80,20 @@ class TabVarViewWidget extends StatelessWidget
 
 }
 
-class CusListView extends StatelessWidget
+class CusListView extends StatefulWidget
 {
   CusListView(this.projectItem);
   final ProjectItem projectItem;
+
+  @override
+  State<StatefulWidget> createState() {
+    return CusListViewState();
+  }
+}
+
+class CusListViewState extends State<CusListView>  with AutomaticKeepAliveClientMixin
+{
+
   int page=0;
 
   @override
@@ -91,26 +101,34 @@ class CusListView extends StatelessWidget
     print("listvie build.......");
 
     return FutureBuilder<List<ItemData>>(
-        future: Provider.of<ProjectProvider>(context).getListDatas(page, projectItem.id),
+        future: Provider.of<ProjectProvider>(context).getListDatas(page, widget.projectItem.id),
         builder: (context,snapshot)
-            {
-              if(!snapshot.hasData)
-                {
-                  return Center(
-                    child: Text("加载中"),
-                  );
-                }
-              else
-                {
-                  return ListView(
-                    children: snapshot.data.map((element){
-                      return ArticleItem(element);
-                    }).toList(),
-                  );
-                }
-            }
+        {
+          if(!snapshot.hasData)
+          {
+            return Center(
+              child: Text("加载中"),
+            );
+          }
+          else
+          {
+            return ListView(
+              children: _getListView(snapshot.data),
+            );
+          }
+        }
     );
   }
+
+  List<Widget>_getListView(List<ItemData> datas)
+  {
+    return datas.map((element){
+      return ArticleItem(element);
+    }).toList();
+  }
+
+  @override
+  bool get wantKeepAlive => true;
 
 }
 
