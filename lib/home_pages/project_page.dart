@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart' hide DropdownButton,DropdownMenuItem,DropdownButtonHideUnderline;
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart' as prefix0;
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:wanandroid/entitys/project_list.dart';
@@ -108,7 +110,10 @@ class CusListViewState extends State<CusListView>  with AutomaticKeepAliveClient
           if(!snapshot.hasData)
           {
             return Center(
-              child: Text("加载中"),
+              child: SpinKitFadingCircle(
+                color: Theme.of(context).primaryColor,
+                size: 50.0,
+              ),
             );
           }
           else
