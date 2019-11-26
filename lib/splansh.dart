@@ -157,6 +157,7 @@ class CountDownWidgetState extends State<CountDownWidget>
         child: InkWell(
            child: Text("$_time | 跳过",style: TextStyle(color: Colors.white),),
           onTap: (){
+            _timer.cancel();
              Navigator.of(context).pushNamed(RouteName.main_page);
           },
         ),

@@ -26,6 +26,7 @@ dependencies:
   dio_cookie_manager: ^1.0.0  #latest version
   flutter_swiper : ^1.1.6
   pull_to_refresh: ^1.5.7
+  flare_flutter: ^1.7.3
 
 
 

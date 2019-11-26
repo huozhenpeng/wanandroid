@@ -6,6 +6,8 @@ import 'package:wanandroid/login/loading_utils.dart';
 import 'package:wanandroid/provider/globle_provider.dart';
 import 'package:wanandroid/provider/home_provider.dart';
 import 'package:wanandroid/provider/homescrollcontroler_provider.dart';
+import 'package:wanandroid/provider/project_controller_provider.dart';
+import 'package:wanandroid/provider/project_provider.dart';
 import 'package:wanandroid/provider/theme_color.dart';
 import 'package:wanandroid/provider/theme_mode.dart';
 import 'package:wanandroid/splansh.dart';
@@ -19,6 +21,8 @@ void main() {
   final GlobalProvider globalProvider=GlobalProvider();
   final HomeProvider homeProvider=HomeProvider();
   final HomeScrollerProvider homeScrollerProvider=HomeScrollerProvider();
+  final ProjectProvider projectProvider=ProjectProvider();
+  final ProjectControllerProvider projectControllerProvider=ProjectControllerProvider();
 
   runApp(
       MultiProvider(
@@ -28,6 +32,8 @@ void main() {
           ChangeNotifierProvider.value(value: globalProvider),
           ChangeNotifierProvider.value(value: homeProvider),
           ChangeNotifierProvider.value(value: homeScrollerProvider),
+          ChangeNotifierProvider.value(value: projectProvider),
+          ChangeNotifierProvider.value(value: projectControllerProvider),
         ],
         child: MyApp(),
       ),

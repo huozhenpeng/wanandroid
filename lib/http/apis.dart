@@ -6,4 +6,6 @@ class Api
   //static final String article_url="/article/list/0/json";
   //首页置顶文章
   static final String top_url="/article/top/json";
+  ///项目分类
+  static final String projec_type_url="/project/tree/json";
 }

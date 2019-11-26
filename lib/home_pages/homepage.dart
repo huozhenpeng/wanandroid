@@ -191,6 +191,7 @@ class HomePageState extends State<HomePage>
   Widget _getArticleList()
   {
     return Consumer<HomeProvider>(builder: (context,homeProvider,child) {
+      //SliverChildBuilderDelegate 这个可以用build  传递index
       return SliverList(delegate: SliverChildListDelegate(
           (homeProvider.homeArticleItems.length<=0) ? [] : homeProvider
               .homeArticleItems.map((topArticleItem) {
