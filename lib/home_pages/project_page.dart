@@ -1,12 +1,12 @@
-import 'package:flutter/material.dart' ;
+import 'package:flutter/material.dart' hide DropdownButton,DropdownMenuItem,DropdownButtonHideUnderline;
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:wanandroid/entitys/project_list.dart';
 import 'package:wanandroid/entitys/project_types.dart';
-import 'package:wanandroid/provider/project_controller_provider.dart';
 import 'package:wanandroid/provider/project_provider.dart';
 import 'package:wanandroid/provider/theme_color.dart';
+import 'package:wanandroid/system/dropdown.dart';
 
 class ProjectPage extends StatefulWidget
 {
@@ -338,6 +338,7 @@ class DropDownWidget extends StatelessWidget
 {
   @override
   Widget build(BuildContext context) {
+    //int currentIndex = Provider.of<int>(context);
     return Container(
       child: Consumer2<ThemeColorProvider,ProjectProvider>(builder: (context,colorProvider,projectProvider,child){
         return Align(
@@ -358,16 +359,31 @@ class DropDownWidget extends StatelessWidget
                   //会增大DropdownButton宽度范围
                   isExpanded: true,
                   icon: Icon(Icons.keyboard_arrow_down,color: colorProvider.theme.computeLuminance()<0.5?Colors.white:Colors.black,),
-                  items: projectProvider.data.map((element){
-                    return DropdownMenuItem(
-                      child: Container(
-                        padding: EdgeInsets.all(6),
-                        child: Text(element.name,style: TextStyle(color: colorProvider.theme.computeLuminance()<0.5?Colors.white:Colors.black),),
-                      ),
-                    );
-                  }).toList(),
-                  onChanged: (index){
 
+//                  items: projectProvider.data.map((element){
+//                    return DropdownMenuItem(
+//                      child: Container(
+//                        padding: EdgeInsets.all(6),
+//                        child: Text(element.name,style: TextStyle(color: colorProvider.theme.computeLuminance()<0.5?Colors.white:Colors.black),),
+//                      ),
+//                    );
+//                  }).toList(),
+                  items: List.generate(projectProvider.data.length, (index){
+
+                    return DropdownMenuItem(
+                        //一定要设置value值
+                        value: index,
+                        child: Container(
+                        padding: EdgeInsets.all(6),
+                        child: Text(projectProvider.data[index].name,style: TextStyle(color: colorProvider.theme.computeLuminance()<0.5?Colors.white:Colors.black),),
+                      )
+                    );
+
+                  }),
+
+
+                  onChanged: (index){
+                    DefaultTabController.of(context).animateTo(index);
                   }
               ),
             ),
