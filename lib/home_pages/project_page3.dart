@@ -101,7 +101,6 @@ class CusListViewState extends State<CusListView>  with AutomaticKeepAliveClient
     print("listvie build.......");
 
     return FutureBuilder<List<ItemData>>(
-
         future: Provider.of<ProjectProvider>(context).getListDatas(page, widget.projectItem.id),
         builder: (context,snapshot)
         {
@@ -113,99 +112,12 @@ class CusListViewState extends State<CusListView>  with AutomaticKeepAliveClient
           }
           else
           {
-            return MListView(snapshot.data,widget.projectItem);
+            return ListView(
+              children: _getListView(snapshot.data),
+            );
           }
         }
     );
-  }
-
-
-
-  @override
-  bool get wantKeepAlive => true;
-
-}
-
-class MListView extends StatefulWidget
-{
-  final List<ItemData> datas;
-  final ProjectItem projectItem;
-  MListView(this.datas,this.projectItem);
-  @override
-  State<StatefulWidget> createState() {
-    return MListViewState();
-  }
-
-}
-
-class MListViewState extends State<MListView>
-{
-  int page=1;
-  RefreshController _refreshController =
-  RefreshController(initialRefresh: false);
-  @override
-  Widget build(BuildContext context) {
-    return  SmartRefresher(
-      controller: _refreshController,
-      onRefresh: _onRefresh,
-      onLoading: _onLoading,
-      enablePullDown: true,
-      enablePullUp: true,
-      header: MaterialClassicHeader(),
-      child: ListView(
-
-        children: _getListView(widget.datas),
-      ),
-    );
-//    return ListView(
-//
-//      children: _getListView(widget.datas),
-//    );
-  }
-
-  void _onRefresh() async{
-    print("onrefresh..................................");
-    // monitor network fetch
-    page=1;
-    List<ItemData> results=await Provider.of<ProjectProvider>(context).getListDatas(page, widget.projectItem.id);
-    // if failed,use refreshFailed()
-    if(results==null)
-    {
-      _refreshController.refreshFailed();
-    }
-    else
-    {
-      setState(() {
-        widget.datas.clear();
-        widget.datas.addAll(results);
-      });
-      _refreshController.refreshCompleted();
-    }
-  }
-
-  void _onLoading() async{
-    print("_onLoading..................................");
-    page++;
-    // monitor network fetch
-    List<ItemData> results=await Provider.of<ProjectProvider>(context).getListDatas(page, widget.projectItem.id);
-    // if failed,use loadFailed(),if no data return,use LoadNodata()
-    if(results==null)
-    {
-      _refreshController.loadFailed();
-    }
-    //这儿没有带过来总页数，以后写的时候最好呆过来，这儿简单判断一下
-    else if(results.length==0)
-    {
-      _refreshController.loadNoData();
-    }
-    else
-    {
-      setState(() {
-        widget.datas.addAll(results);
-      });
-      _refreshController.loadComplete();
-    }
-
   }
 
   List<Widget>_getListView(List<ItemData> datas)
@@ -215,9 +127,10 @@ class MListViewState extends State<MListView>
     }).toList();
   }
 
+  @override
+  bool get wantKeepAlive => true;
+
 }
-
-
 
 class ArticleItem extends StatelessWidget
 {
@@ -382,4 +295,3 @@ class DropDownWidget extends StatelessWidget
   }
 
 }
-
