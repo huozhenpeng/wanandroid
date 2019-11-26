@@ -18,7 +18,7 @@ class MainPage extends StatefulWidget
 
 }
 
-class MainPageState extends State<MainPage>
+class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin
 {
   int _currentIndex=0;
   List<Widget> widgets =[
@@ -75,15 +75,20 @@ class MainPageState extends State<MainPage>
           }
       ),
 
-//      body:IndexedStack(
-//        children: widgets,
-//        index: _currentIndex,
-//      ),
-    body: widgets[_currentIndex],
+      //这种切换方式才可以保持状态
+      body:IndexedStack(
+        children: widgets,
+        index: _currentIndex,
+      ),
+     // body: widgets[_currentIndex],
 
     );
 
   }
+
+  @override
+  // TODO: implement wantKeepAlive
+  bool get wantKeepAlive => true;
 
 }
 
