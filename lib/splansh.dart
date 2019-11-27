@@ -158,7 +158,9 @@ class CountDownWidgetState extends State<CountDownWidget>
            child: Text("$_time | 跳过",style: TextStyle(color: Colors.white),),
           onTap: (){
             _timer.cancel();
-             Navigator.of(context).pushNamed(RouteName.main_page);
+             //Navigator.of(context).pushNamed(RouteName.main_page);
+            Navigator.of(context).pushNamedAndRemoveUntil(RouteName.main_page, (route) => route == null);
+
           },
         ),
       ),
@@ -176,7 +178,9 @@ class CountDownWidgetState extends State<CountDownWidget>
     _timer=Timer.periodic(Duration(seconds: 1), (timer){
       if(_time<1)
         {
-          Navigator.of(context).pushNamed(RouteName.main_page);
+          //Navigator.of(context).pushNamed(RouteName.main_page);
+          Navigator.of(context).pushNamedAndRemoveUntil(RouteName.main_page, (route) => route == null);
+
           timer.cancel();
         }
       else
