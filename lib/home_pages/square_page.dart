@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:wanandroid/home_pages/webviewdemo.dart';
 
 class SquarePage extends StatefulWidget
 {
@@ -17,18 +18,25 @@ class SquarePageState extends State<SquarePage> with AutomaticKeepAliveClientMix
     return Center(
       child: Column(
         children: <Widget>[
-          Text("flutter view"),
           Container(
-            width: 100,
-            height: 100,
+            width: 300,
+            height: 500,
             child:  AndroidView(
-              viewType: "mview",
+              viewType: "webview",
               creationParams: {
-                "text":"这是flutter传递过来的参数"
+                "url":"https://www.wanandroid.com/blog/show/2030"
               },
               creationParamsCodec: StandardMessageCodec(),
           ),
 
+          ),
+          InkWell(
+            onTap: (){
+              Navigator.of(context).push(MaterialPageRoute(builder: (context){
+                return WebViewExample();
+              }));
+            },
+            child:  Text("flutter view"),
           ),
 
         ],

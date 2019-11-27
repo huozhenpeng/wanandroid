@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:wanandroid/entitys/home_articles.dart';
 import 'package:wanandroid/entitys/top_articles.dart';
+import 'package:wanandroid/home_pages/webview.dart';
 import 'package:wanandroid/login/loading_utils.dart';
 import 'package:wanandroid/main_pages/switch_visiable.dart';
 import 'package:wanandroid/provider/home_provider.dart';
@@ -223,43 +224,50 @@ class ArticleItem extends StatelessWidget
   Widget build(BuildContext context) {
     return Consumer<ThemeColorProvider>(builder:(context,colorProvider,child){
 
-      return Container(
-        padding: EdgeInsets.only(left: 10,top: 10,right: 10,bottom: 0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Row(
-               children: <Widget>[
-                 _getTags(topAritcleItem),
-                 Container(child:Text(topAritcleItem.author.isEmpty?topAritcleItem.shareUser:topAritcleItem.author)),
-                 Expanded(
-                     child: Text("${topAritcleItem.niceDate}",textAlign: TextAlign.right,),
-                 )
+      return InkWell(
+        onTap: (){
+          Navigator.of(context).push(MaterialPageRoute(builder: (context){
+            return WebViewWidget(topAritcleItem.title,topAritcleItem.link);
+          }));
+        },
+        child: Container(
+          padding: EdgeInsets.only(left: 10,top: 10,right: 10,bottom: 0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Row(
+                children: <Widget>[
+                  _getTags(topAritcleItem),
+                  Container(child:Text(topAritcleItem.author.isEmpty?topAritcleItem.shareUser:topAritcleItem.author)),
+                  Expanded(
+                    child: Text("${topAritcleItem.niceDate}",textAlign: TextAlign.right,),
+                  )
 
-               ],
-            ),
-            Padding(
-              padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
-              child: Text(topAritcleItem.title, maxLines: 2, overflow: TextOverflow.ellipsis,),
-            ),
-            
-            Row(
-              children: <Widget>[
-                Text("${topAritcleItem.superChapterName}/${topAritcleItem.chapterName}",style: TextStyle(color: Colors.black45,fontSize: 12),),
-                
-                Expanded(
-                    child: Container(
-                
-                      alignment: Alignment.centerRight,
-                      child: Icon(Icons.favorite_border,color: colorProvider.theme,),
-                )
-                )
-              ],
-            ),
-            Divider()
-          ],
+                ],
+              ),
+              Padding(
+                padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
+                child: Text(topAritcleItem.title, maxLines: 2, overflow: TextOverflow.ellipsis,),
+              ),
+
+              Row(
+                children: <Widget>[
+                  Text("${topAritcleItem.superChapterName}/${topAritcleItem.chapterName}",style: TextStyle(color: Colors.black45,fontSize: 12),),
+
+                  Expanded(
+                      child: Container(
+
+                        alignment: Alignment.centerRight,
+                        child: Icon(Icons.favorite_border,color: colorProvider.theme,),
+                      )
+                  )
+                ],
+              ),
+              Divider()
+            ],
+          ),
+
         ),
-
       );
     }
     );

@@ -28,6 +28,7 @@ dependencies:
   pull_to_refresh: ^1.5.7
   flare_flutter: ^1.7.3
   flutter_spinkit: ^4.0.0
+  webview_flutter: ^0.3.16
 
 
 

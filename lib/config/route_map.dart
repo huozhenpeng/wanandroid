@@ -29,7 +29,7 @@ class RouteMap
     return {
       RouteName.splansh:(context)=>SplanshWidget(),//spansh页面
       RouteName.main_page:(context)=>MainPage(),//主页面
-      RouteName.login:(context)=>LoginWidget(),//主页面
+      RouteName.login:(context)=>LoginWidget(),//登陆页面
     };
   }
 
