@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:wanandroid/config/route_name.dart';
 import 'package:wanandroid/home_pages/homepage.dart';
 import 'package:wanandroid/home_pages/project_page.dart';
+import 'package:wanandroid/home_pages/public_page.dart';
 import 'package:wanandroid/home_pages/square_page.dart';
 import 'package:wanandroid/home_pages/systemup_page.dart';
 import 'package:wanandroid/login/login.dart';
@@ -26,9 +27,7 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin
   List<Widget> widgets =[
     HomePage(),
     SquarePage(),
-    Center(
-      child: Text("3"),
-    ),
+    PublicPage(),
     SystemUpWidget(),
     ProjectPage(),
 

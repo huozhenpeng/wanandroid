@@ -6,20 +6,23 @@ import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:wanandroid/entitys/project_list.dart';
 import 'package:wanandroid/entitys/project_types.dart';
+import 'package:wanandroid/entitys/public_results.dart';
+import 'package:wanandroid/entitys/public_types.dart';
 import 'package:wanandroid/provider/project_provider.dart';
+import 'package:wanandroid/provider/public_provider.dart';
 import 'package:wanandroid/provider/theme_color.dart';
 import 'package:wanandroid/system/dropdown.dart';
 
-class ProjectPage extends StatefulWidget
+class PublicPage extends StatefulWidget
 {
   @override
   State<StatefulWidget> createState() {
-    return ProjectPageState();
+    return PublicPageState();
   }
 
 }
 
-class ProjectPageState extends State<ProjectPage> with AutomaticKeepAliveClientMixin
+class PublicPageState extends State<PublicPage> with AutomaticKeepAliveClientMixin
 {
   @override
   void initState() {
@@ -29,11 +32,11 @@ class ProjectPageState extends State<ProjectPage> with AutomaticKeepAliveClientM
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    Provider.of<ProjectProvider>(context,listen: false).getTypes();
+    Provider.of<PublicProvider>(context,listen: false).getTypes();
   }
   @override
   Widget build(BuildContext context) {
-    return Consumer2<ThemeColorProvider,ProjectProvider>(builder: (context,colorProvider,projectProvider,child){
+    return Consumer2<ThemeColorProvider,PublicProvider>(builder: (context,colorProvider,projectProvider,child){
       if(projectProvider.data.length==0)
       {
         return Text("");
@@ -73,7 +76,7 @@ class TabVarViewWidget extends StatelessWidget
 {
   @override
   Widget build(BuildContext context) {
-    return Consumer2<ThemeColorProvider,ProjectProvider>(builder: (context,colorProvider,projectProvider,child){
+    return Consumer2<ThemeColorProvider,PublicProvider>(builder: (context,colorProvider,projectProvider,child){
       return TabBarView(
           children: projectProvider.data.map((projectItem){
             print("element:${projectItem==null?"空":"非空"}");
@@ -88,7 +91,7 @@ class TabVarViewWidget extends StatelessWidget
 class CusListView extends StatefulWidget
 {
   CusListView(this.projectItem);
-  final ProjectItem projectItem;
+  final PublicTypeItem projectItem;
 
   @override
   State<StatefulWidget> createState() {
@@ -105,9 +108,9 @@ class CusListViewState extends State<CusListView>  with AutomaticKeepAliveClient
   Widget build(BuildContext context) {
     print("listvie build.......");
 
-    return FutureBuilder<List<ItemData>>(
+    return FutureBuilder<List<PublicItem>>(
 
-        future: Provider.of<ProjectProvider>(context).getListDatas(page, widget.projectItem.id),
+        future: Provider.of<PublicProvider>(context).getListDatas(page, widget.projectItem.id),
         builder: (context,snapshot)
         {
           if(!snapshot.hasData)
@@ -136,8 +139,8 @@ class CusListViewState extends State<CusListView>  with AutomaticKeepAliveClient
 
 class MListView extends StatefulWidget
 {
-  final List<ItemData> datas;
-  final ProjectItem projectItem;
+  final List<PublicItem> datas;
+  final PublicTypeItem projectItem;
   MListView(this.datas,this.projectItem);
   @override
   State<StatefulWidget> createState() {
@@ -175,7 +178,7 @@ class MListViewState extends State<MListView>
     print("onrefresh..................................");
     // monitor network fetch
     page=1;
-    List<ItemData> results=await Provider.of<ProjectProvider>(context).getListDatas(page, widget.projectItem.id);
+    List<PublicItem> results=await Provider.of<PublicProvider>(context).getListDatas(page, widget.projectItem.id);
     // if failed,use refreshFailed()
     if(results==null)
     {
@@ -195,7 +198,7 @@ class MListViewState extends State<MListView>
     print("_onLoading..................................");
     page++;
     // monitor network fetch
-    List<ItemData> results=await Provider.of<ProjectProvider>(context).getListDatas(page, widget.projectItem.id);
+    List<PublicItem> results=await Provider.of<PublicProvider>(context).getListDatas(page, widget.projectItem.id);
     // if failed,use loadFailed(),if no data return,use LoadNodata()
     if(results==null)
     {
@@ -216,7 +219,7 @@ class MListViewState extends State<MListView>
 
   }
 
-  List<Widget>_getListView(List<ItemData> datas)
+  List<Widget>_getListView(List<PublicItem> datas)
   {
     return datas.map((element){
       return ArticleItem(element);
@@ -229,7 +232,7 @@ class MListViewState extends State<MListView>
 
 class ArticleItem extends StatelessWidget
 {
-  final ItemData topAritcleItem;
+  final PublicItem topAritcleItem;
   ArticleItem(this.topAritcleItem);
   @override
   Widget build(BuildContext context) {
@@ -242,27 +245,30 @@ class ArticleItem extends StatelessWidget
           children: <Widget>[
             Row(
               children: <Widget>[
+                CircleAvatar(
+                  radius: 15,
+                  backgroundImage:AssetImage("images/user_avatar.png")
+                ),
+                Container(
+                  child: Text(topAritcleItem.author,maxLines:1,style: TextStyle(fontSize: 16,fontStyle: FontStyle.normal)),
+                  margin: EdgeInsets.only(left: 10),
+                ),
+
                 Expanded(
-                  child:Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Container(child:Text(topAritcleItem.title,maxLines:1,style: TextStyle(fontSize: 16,fontStyle: FontStyle.normal),)),
-                      Container(margin:EdgeInsets.only(top: 10),child:Text(topAritcleItem.desc,maxLines: 2,)),
-                    ],
-                  ),
-                ),
-                Padding(padding: EdgeInsets.all(10),
 
-                  child: Image.network(topAritcleItem.envelopePic,width: 70,height: 100,),
+                  child:Container( alignment:Alignment.centerRight,child:Text(topAritcleItem.niceDate,maxLines:1,style: TextStyle(fontSize: 16,fontStyle: FontStyle.normal),)),
                 ),
-
               ],
+            ),
+
+            Container(
+              margin: EdgeInsets.only(top: 10,bottom: 10),
+              child: Text(topAritcleItem.title,maxLines: 2,overflow: TextOverflow.ellipsis,),
             ),
 
             Row(
               children: <Widget>[
-                Text(topAritcleItem.author,style: TextStyle(color: Colors.black45,fontSize: 12),),
-                Text(topAritcleItem.niceDate,style: TextStyle(color: Colors.black45,fontSize: 12),),
+                Text("${topAritcleItem.chapterName}",style: TextStyle(color: Colors.black45,fontSize: 12),),
 
                 Expanded(
                     child: Container(
@@ -312,7 +318,7 @@ class TabBarWidgetState extends State<TabBarWidget> with TickerProviderStateMixi
   @override
   Widget build(BuildContext context) {
     print("TabBarWidget build.............");
-    return Consumer2<ThemeColorProvider, ProjectProvider>(
+    return Consumer2<ThemeColorProvider, PublicProvider>(
         builder: (context, colorProvider, projectProvider,child) {
           print("Consumer2 build.............");
           return Container(
@@ -348,7 +354,7 @@ class DropDownWidget extends StatelessWidget
   Widget build(BuildContext context) {
     //int currentIndex = Provider.of<int>(context);
     return Container(
-      child: Consumer2<ThemeColorProvider,ProjectProvider>(builder: (context,colorProvider,projectProvider,child){
+      child: Consumer2<ThemeColorProvider,PublicProvider>(builder: (context,colorProvider,projectProvider,child){
         return Align(
 
           //这里嵌套一个主题，要不然DropdownButton的背景色是白色，改不掉
@@ -367,24 +373,15 @@ class DropDownWidget extends StatelessWidget
                   //会增大DropdownButton宽度范围
                   isExpanded: true,
                   icon: Icon(Icons.keyboard_arrow_down,color: colorProvider.theme.computeLuminance()<0.5?Colors.white:Colors.black,),
-
-//                  items: projectProvider.data.map((element){
-//                    return DropdownMenuItem(
-//                      child: Container(
-//                        padding: EdgeInsets.all(6),
-//                        child: Text(element.name,style: TextStyle(color: colorProvider.theme.computeLuminance()<0.5?Colors.white:Colors.black),),
-//                      ),
-//                    );
-//                  }).toList(),
                   items: List.generate(projectProvider.data.length, (index){
 
                     return DropdownMenuItem(
-                        //一定要设置value值
+                      //一定要设置value值
                         value: index,
                         child: Container(
-                        padding: EdgeInsets.all(6),
-                        child: Text(projectProvider.data[index].name,style: TextStyle(color: colorProvider.theme.computeLuminance()<0.5?Colors.white:Colors.black),),
-                      )
+                          padding: EdgeInsets.all(6),
+                          child: Text(projectProvider.data[index].name,style: TextStyle(color: colorProvider.theme.computeLuminance()<0.5?Colors.white:Colors.black),),
+                        )
                     );
 
                   }),

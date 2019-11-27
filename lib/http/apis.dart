@@ -12,4 +12,6 @@ class Api
   static final String system_url="/tree/json";
   //导航
   static final String nav_url="/navi/json";
+  //公众号tab
+  static final String public_url="/wxarticle/chapters/json";
 }
