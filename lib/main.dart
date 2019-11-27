@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 import 'package:wanandroid/config/route_map.dart';
 import 'package:wanandroid/http/http_utils.dart';
@@ -54,17 +55,19 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Consumer<ThemeColorProvider>(builder: (context,themeColorProvider,child){
-      return MaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: 'wanandroid',
-        theme: ThemeData(
-          primarySwatch: themeColorProvider.theme,
-          primaryColor: themeColorProvider.theme,
-          brightness: Brightness.light,
-        ),
-        home: MyHomePage(title: 'wanandroid'),
-        routes: RouteMap.instance.getRouteMap(),
-        //initialRoute:RouteName.splansh ,
+      return OKToast(
+          child: MaterialApp(
+            debugShowCheckedModeBanner: false,
+            title: 'wanandroid',
+            theme: ThemeData(
+              primarySwatch: themeColorProvider.theme,
+              primaryColor: themeColorProvider.theme,
+              brightness: Brightness.light,
+            ),
+            home: MyHomePage(title: 'wanandroid'),
+            routes: RouteMap.instance.getRouteMap(),
+            //initialRoute:RouteName.splansh ,
+          )
       );
     });
   }
