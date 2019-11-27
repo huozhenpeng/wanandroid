@@ -34,7 +34,7 @@ class HttpUtils
         // Do something before request is sent
         return options; //continue
       }, onResponse: (Response response) {
-        print("响应之前");
+        print("响应之前:${response.request.uri}");
         // Do something with response data
         return response; // continue
       }, onError: (DioError e) {

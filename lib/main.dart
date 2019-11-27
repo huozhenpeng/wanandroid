@@ -8,6 +8,7 @@ import 'package:wanandroid/provider/home_provider.dart';
 import 'package:wanandroid/provider/homescrollcontroler_provider.dart';
 import 'package:wanandroid/provider/project_controller_provider.dart';
 import 'package:wanandroid/provider/project_provider.dart';
+import 'package:wanandroid/provider/squeare_provider.dart';
 import 'package:wanandroid/provider/system_provider.dart';
 import 'package:wanandroid/provider/theme_color.dart';
 import 'package:wanandroid/provider/theme_mode.dart';
@@ -25,6 +26,7 @@ void main() {
   final ProjectProvider projectProvider=ProjectProvider();
   final ProjectControllerProvider projectControllerProvider=ProjectControllerProvider();
   final SystemProvider systemProvider=SystemProvider();
+  final SquareProvider squareProvider=SquareProvider();
 
   runApp(
       MultiProvider(
@@ -37,6 +39,7 @@ void main() {
           ChangeNotifierProvider.value(value: projectProvider),
           ChangeNotifierProvider.value(value: projectControllerProvider),
           ChangeNotifierProvider.value(value: systemProvider),
+          ChangeNotifierProvider.value(value: squareProvider),
         ],
         child: MyApp(),
       ),

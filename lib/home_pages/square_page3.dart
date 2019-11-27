@@ -21,14 +21,15 @@ class SquarePage extends StatefulWidget
 class SquarePageState extends State<SquarePage> with AutomaticKeepAliveClientMixin
 {
   int page=1;
-
+  RefreshController _refreshController =
+  RefreshController(initialRefresh: false);
   final List<Article> datas=[];
   @override
   bool get wantKeepAlive => true;
 
   @override
   Widget build(BuildContext context) {
-
+    
     return Consumer<ThemeColorProvider>(builder: (context,colorProvider,child){
       return  Scaffold(
           appBar: AppBar(
@@ -38,30 +39,80 @@ class SquarePageState extends State<SquarePage> with AutomaticKeepAliveClientMix
             title: Text("广场",style: TextStyle(color: colorProvider.theme.computeLuminance()<0.5?Colors.white:Colors.black
             ),),
           ),
-          body: FutureBuilder<SquareResult>(
-              future: Provider.of<SquareProvider>(context).getSquareResult(page),
-              builder: (context,snap)
-              {
-                if(!snap.hasData)
-                {
-                  return Center(
-                    child: SpinKitFadingCircle(
-                      color: Theme.of(context).primaryColor,
-                      size: 50.0,
-                    ),
-                  );
-                }
-                else
-                {
-                  datas.addAll(snap.data.data.shareArticles.datas);
-
-                  return ListViewPage(datas);
-
-                }
-              }
+          body: SmartRefresher(
+              controller: _refreshController,
+              onRefresh: _onRefresh,
+              onLoading: _onLoading,
+              enablePullDown: true,
+              enablePullUp: true,
+              header: MaterialClassicHeader(),
+              child: FutureBuilder<SquareResult>(
+                future: Provider.of<SquareProvider>(context).getSquareResult(page),
+                  builder: (context,snap)
+                  {
+                    if(!snap.hasData)
+                      {
+                        return Center(
+                          child: SpinKitFadingCircle(
+                            color: Theme.of(context).primaryColor,
+                            size: 50.0,
+                          ),
+                        );
+                      }
+                    else
+                      {
+                        datas.addAll(snap.data.data.shareArticles.datas);
+                        return ListViewPage(datas);
+                      }
+                  }
+              )
           )
         );
     },);
+  }
+
+  void _onRefresh() async{
+    // monitor network fetch
+    page=1;
+    SquareResult result=await Provider.of<SquareProvider>(context,listen: false).getSquareResult(page);
+    // if failed,use refreshFailed()
+    if(result==null)
+    {
+      _refreshController.refreshFailed();
+    }
+    else
+    {
+      datas.clear();
+      datas.addAll(result.data.shareArticles.datas);
+      setState(() {
+
+      });
+      _refreshController.refreshCompleted();
+    }
+  }
+
+  void _onLoading() async{
+    page++;
+    // monitor network fetch
+    SquareResult result=await Provider.of<SquareProvider>(context,listen: false).getSquareResult(page);
+    // if failed,use loadFailed(),if no data return,use LoadNodata()
+    if(result==null)
+    {
+      _refreshController.loadFailed();
+      datas.addAll(result.data.shareArticles.datas);
+      setState(() {
+
+      });
+    }
+    else if(page>=result.data.shareArticles.pageCount)
+    {
+      _refreshController.loadNoData();
+    }
+    else
+    {
+      _refreshController.loadComplete();
+    }
+
   }
 
 }
@@ -79,70 +130,15 @@ class ListViewPage extends StatefulWidget
 
 class ListViewPageState extends State<ListViewPage>
 {
-  RefreshController _refreshController =
-  RefreshController(initialRefresh: false);
-  int page=1;
   @override
   Widget build(BuildContext context) {
-    return SmartRefresher(
-      controller: _refreshController,
-      onRefresh: _onRefresh,
-      onLoading: _onLoading,
-      enablePullDown: true,
-      enablePullUp: true,
-      header: MaterialClassicHeader(),
-      child: ListView.builder(
-          itemCount: widget.datas.length,
-          itemBuilder: (context,index)
-          {
-            return ArticleItem(widget.datas[index]);
-          }
-      ),
+    return ListView.builder(
+      itemCount: widget.datas.length,
+        itemBuilder: (context,index)
+        {
+          return ArticleItem(widget.datas[index]);
+        }
     );
-  }
-
-  void _onRefresh() async{
-    // monitor network fetch
-    page=1;
-    SquareResult result=await Provider.of<SquareProvider>(context,listen: false).getSquareResult(page);
-    // if failed,use refreshFailed()
-    if(result==null)
-    {
-      _refreshController.refreshFailed();
-    }
-    else
-    {
-      widget.datas.clear();
-      widget.datas.addAll(result.data.shareArticles.datas);
-      setState(() {
-
-      });
-      _refreshController.refreshCompleted();
-    }
-  }
-
-  void _onLoading() async{
-    page++;
-    // monitor network fetch
-    SquareResult result=await Provider.of<SquareProvider>(context,listen: false).getSquareResult(page);
-    // if failed,use loadFailed(),if no data return,use LoadNodata()
-    if(result==null)
-    {
-      _refreshController.loadFailed();
-    }
-    else if(page>=result.data.shareArticles.pageCount)
-    {
-      _refreshController.loadNoData();
-    }
-    else
-    {
-      _refreshController.loadComplete();
-      widget.datas.addAll(result.data.shareArticles.datas);
-      setState(() {
-
-      });
-    }
-
   }
 
 }
