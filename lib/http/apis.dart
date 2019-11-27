@@ -8,4 +8,8 @@ class Api
   static final String top_url="/article/top/json";
   ///项目分类
   static final String projec_type_url="/project/tree/json";
+  ///体系
+  static final String system_url="/tree/json";
+  //导航
+  static final String nav_url="/navi/json";
 }

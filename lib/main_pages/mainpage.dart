@@ -4,6 +4,7 @@ import 'package:wanandroid/config/route_name.dart';
 import 'package:wanandroid/home_pages/homepage.dart';
 import 'package:wanandroid/home_pages/project_page.dart';
 import 'package:wanandroid/home_pages/square_page.dart';
+import 'package:wanandroid/home_pages/systemup_page.dart';
 import 'package:wanandroid/login/login.dart';
 import 'package:wanandroid/main_pages/customdraw.dart';
 import 'package:wanandroid/provider/theme_color.dart';
@@ -28,9 +29,7 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin
     Center(
       child: Text("3"),
     ),
-    Center(
-      child: Text("4"),
-    ),
+    SystemUpWidget(),
     ProjectPage(),
 
   ];
